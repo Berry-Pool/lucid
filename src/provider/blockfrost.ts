@@ -116,6 +116,24 @@ export class Blockfrost implements ProviderSchema {
     }));
   }
 
+  async getInputs(utxo: UTxO, maxRetries: number = 5, backoff: number = 3000): Promise<Address[]> {
+    let retries: number = 0;
+    while (true) {
+      let result = await fetch(
+        `${this.url}/txs/${utxo.txHash}/utxos`,
+        { headers: { project_id: this.projectId } }
+      ).then(res => res.json());
+      if (result && !result.error) {
+        let inputs: any[] = result.inputs;
+        return inputs.map(input => input.address);
+      }
+      if (retries >= maxRetries) {
+        throw new Error(result);
+      }
+      await new Promise(resolve => setTimeout(resolve, backoff));
+    }
+  }
+
   async getDatum(datumHash: DatumHash): Promise<Datum> {
     const datum = await fetch(`${this.url}/scripts/datum/${datumHash}`, {
       headers: { project_id: this.projectId },

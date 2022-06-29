@@ -23,6 +23,7 @@ export interface ProviderSchema {
   getCurrentSlot(): Promise<Slot>;
   getUtxos(address: Address): Promise<UTxO[]>;
   getUtxosWithUnit?(address: Address, unit: Unit): Promise<UTxO[]>;
+  getInputs?(utxo: UTxO, maxRetries: number, backoff: number): Promise<Address[]>;
   getDatum?(datumHash: DatumHash): Promise<Datum>;
   awaitTx?(txHash: TxHash): Promise<boolean>;
   submitTx?(tx: Core.Transaction): Promise<TxHash>;

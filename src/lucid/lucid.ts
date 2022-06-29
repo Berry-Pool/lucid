@@ -96,6 +96,10 @@ export class Lucid {
     return this.provider.getUtxosWithUnit(address, unit);
   }
 
+  async inputsOf(utxo: UTxO, maxRetries: number = 5, backoff: number = 3000): Promise<Address[]> {
+    return this.provider.getInputs(utxo, maxRetries, backoff);
+  }
+
   async awaitTx(txHash: TxHash): Promise<boolean> {
     return this.provider.awaitTx(txHash);
   }
